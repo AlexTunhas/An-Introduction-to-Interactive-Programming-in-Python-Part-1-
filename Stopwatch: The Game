@@ -1,0 +1,81 @@
+# Link to one of the  projects of the course called "Stopwatch: The Game" which consists of a game where the stopwatch has to be stopped in whole seconds to score a point, each
+# stop attempt counts:
+
+# https://py2.codeskulptor.org/#user49_6QX8Lc2o7e_0.py 
+
+##
+
+# Code:
+import simplegui
+
+# define global variables
+t = 0
+height = 200
+width = 400
+total_stops = 0
+successful_stops = 0
+
+# define helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+def format(t):
+    
+    total_s = float(t / 10)
+    A = str(int(total_s // 60))
+    modulo_s = int(total_s % 60)
+    if modulo_s >= 10:
+        B = str(modulo_s)[0]
+        C = str(modulo_s)[1]
+    else:
+        B = str(0)
+        C = str(modulo_s)[0]
+    D = str(t)[-1]
+    
+    return A + ":" + B + C + "." + D
+    
+# define event handlers for buttons; "Start", "Stop", "Reset"
+def start_handler():
+    global running
+    timer.start()
+    running = True
+    
+def stop_handler():
+    global running, total_stops, successful_stops
+    timer.stop()
+    if running == True:
+        if str(t)[-1] == str(0):
+            total_stops += 1
+            successful_stops += 1
+        else:
+            total_stops += 1
+    running = False
+    
+def reset_handler():
+    global t, total_stops, successful_stops
+    t = 0
+    total_stops = 0
+    successful_stops = 0
+
+# define event handler for timer with 0.1 sec interval
+def tick():
+    global t
+    t += 1
+
+# define draw handler
+def draw_handler(canvas):
+    global t, total_stops, succesful_stops
+    canvas.draw_text(format(t),[(width / 2) - (text_width / 1.2 )  , (height / 1.8) + (text_width / 5) ], 100, "Green")
+    canvas.draw_text(str(successful_stops) + "/" + str(total_stops),[(width / 1.35) , (height / 4)], 40, "Green")
+    
+# create frame
+frame = simplegui.create_frame("Stopwatch: The Game", 400, 200)
+text_width = frame.get_canvas_textwidth("100", 100)
+
+# register event handlers
+frame.set_draw_handler(draw_handler)
+timer = simplegui.create_timer(100, tick)
+start_button = frame.add_button("Start", start_handler, 50)
+stop_button = frame.add_button("Stop", stop_handler, 50)
+reset_button = frame.add_button("Reset", reset_handler, 50)
+
+# start frame
+frame.start()
